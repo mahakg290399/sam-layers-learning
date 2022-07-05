@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: SAM Template for Layers-Demo Application
+Globals:
+  Function:
+    Timeout: 60
+Resources:
+  DeserializeDemoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: LayersApp-DeserializeDemo
+      Description: Layers App Deserialize Demo Function
+      Role: arn:aws:iam::583115839472:role/service-role/listS3buckets-role-kmxvtycs
+      CodeUri: s3://mahak-test-bucket/17d6cb8014b9ad6983da4d14f6a9dd5b
+      Handler: main.lambda_handler
+      Runtime: python3.8
+      Layers:
+      - Ref: MyLambdaLayer
+    Metadata:
+      SamResourceId: DeserializeDemoFunction
+  ObjectPathDataDemoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: LayersApp-ObjectPathDataDemo
+      Description: Layers App Deserialize Demo Function
+      Role: arn:aws:iam::583115839472:role/service-role/listS3buckets-role-kmxvtycs
+      CodeUri: s3://mahak-test-bucket/b3c36dfc926aaa691c99fc044d47b515
+      Handler: main.lambda_handler
+      Runtime: python3.8
+      Layers:
+      - Ref: MyLambdaLayer
+    Metadata:
+      SamResourceId: ObjectPathDataDemoFunction
+  MyLambdaLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: MyLambdaLayer
+      Description: My Lambda Layer with Deserialize Function, Objectpath Module &
+        AWS Regions JSON
+      ContentUri: s3://mahak-test-bucket/40ccb000f58925fa63ae8219679c5b13
+      CompatibleRuntimes:
+      - python3.8
+      LicenseInfo: MIT
+      RetentionPolicy: Retain
+    Metadata:
+      SamResourceId: MyLambdaLayer
+Outputs:
+  MyLambdaLayerARN:
+    Value:
+      Ref: MyLambdaLayer
+    Description: MyLambdaLayer ARN
+    Export:
+      Name: my-lambda-layer-arn
